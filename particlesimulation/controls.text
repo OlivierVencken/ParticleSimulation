@@ -1,0 +1,27 @@
+Key             Action
+
+Move particles
+W               move all particles up 
+A               move all particles left
+S               move all particles right
+D               move all particles down
+
+Change environment settings
+Comma           decrease friction
+Period          increase friction
+Left            decrease dt 
+Right           incrase dt 
+Down            decrease force
+Up              increase force
+K               decrease rMax
+L            Increase rMax
+
+Particle settings
+I               on/off glow
+Space           new random attraction matrix
+
+Preset rules (attraction)
+1               preset attraction matrix --> total repulsion
+2               preset attraction matrix --> only attract own color/group
+3               preset attraction matrix --> rgb worm
+4               preset attraction matrix --> 
