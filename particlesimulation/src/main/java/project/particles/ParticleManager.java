@@ -20,7 +20,6 @@ public class ParticleManager {
     private int forceFactor  = 1;
     private double dt = 0.01;
 
-    private boolean SPenabled = true;
     private Grid grid;
 
     private double totalForcex = 0;
@@ -68,9 +67,8 @@ public class ParticleManager {
      * Update logic for all particles
      */
     public void update() {
-        grid = new Grid(rMax);
+        grid = new Grid(rMax, particles);
         for (Particle particle : particles) {
-            grid.addParticle(particle);
             updateVelocity(particle, grid);
             updatePosition(particle);
         }
@@ -85,23 +83,10 @@ public class ParticleManager {
         totalForcex = 0;
         totalForcey = 0;
 
-        
-        if (SPenabled) {
-            // Efficient spatial partitioning algorithm 
-            //TODO: Fix SP not working correctly
-            ArrayList<Particle> neighbors = grid.getNeighbors(particle);
-            for (Particle neighbor : neighbors) {
-                if (attraction[particle.getGroupNumber()][neighbor.getGroupNumber()] != 0) {
-                    calculateDistance(particle.getX(), particle.getY(), neighbor.getX(), neighbor.getY(), attraction[particle.getGroupNumber()][neighbor.getGroupNumber()]);
-                }
-            }
-        } else {
-            // Normal inefficient algorithmn 
-            for (Particle neighbor : particles) {
-                if (attraction[particle.getGroupNumber()][neighbor.getGroupNumber()] != 0) {
-                    calculateDistance(particle.getX(), particle.getY(), neighbor.getX(), neighbor.getY(), attraction[particle.getGroupNumber()][neighbor.getGroupNumber()]);
-                }
-            }
+        // Efficient spatial partitioning algorithm 
+        ArrayList<Particle> neighbors = grid.getNeighbors(particle);
+        for (Particle neighbor : neighbors) {
+            calculateDistance(particle.getX(), particle.getY(), neighbor.getX(), neighbor.getY(), attraction[particle.getGroupNumber()][neighbor.getGroupNumber()]);
         }
         
         totalForcex *= rMax * forceFactor;
@@ -213,14 +198,13 @@ public class ParticleManager {
      */
     public void showInfo(Graphics g, int borderOffset) {
         g.setColor(new Color(60, 60, 60, 80));
-        g.fillRect(Frame.width - 74, 0, 74, 146);
+        g.fillRect(Frame.width - 74, 0, 74, 126);
 
         g.setColor(Color.white);
         g.drawString("rMax: " + Math.round(rMax * 10) / 10, Frame.width - borderOffset, 60);
         g.drawString("dt: " + Math.round(dt * 10000) / 10000.0, Frame.width - borderOffset, 80);
         g.drawString("fric: " + friction, Frame.width - borderOffset, 100);
         g.drawString("F: " + Math.round(forceFactor * 10000) / 10000.0, Frame.width - borderOffset, 120);
-        g.drawString("SP: " + SPenabled, Frame.width - borderOffset, 140);
 
         int startX = Frame.width - 200;
         int startY = 0;
@@ -289,18 +273,6 @@ public class ParticleManager {
     }
 
     /**
-     * Switch between spatial partitioning distance calculation,
-     * and normal distance calculation
-     */
-    public void switchSP() {
-        if (SPenabled) {
-            SPenabled = false;
-        } else {
-            SPenabled = true;
-        }
-    }
-
-    /**
      * Renders the particles
      * @param g Graphics g
      */
@@ -309,7 +281,9 @@ public class ParticleManager {
             for (Particle particle : particles) {
                 particle.render(g);
             }
-            grid.render(g);
+
+            // for debugging
+            //grid.render(g);
         }
     }
 

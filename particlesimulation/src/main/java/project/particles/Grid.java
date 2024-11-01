@@ -18,7 +18,7 @@ public class Grid {
      * Grid contructor for spatial partitioning
      * @param cellSize size of a gridcell
      */
-    public Grid(double cellSize) {
+    public Grid(double cellSize, ArrayList<Particle> particles) {
         this.cols = (int) Math.ceil(Frame.width / cellSize);
         this.rows = (int) Math.ceil(Frame.height / cellSize);
         this.cellSize = cellSize;
@@ -26,6 +26,10 @@ public class Grid {
         cells = new ArrayList<>(cols * rows);
         for (int i = 0; i < cols * rows; i++) {
             cells.add(new HashSet<>());
+        }
+
+        for (Particle particle : particles) {
+            addParticle(particle);
         }
     }
 
@@ -73,7 +77,6 @@ public class Grid {
         int row = (int) (particle.getY() / cellSize);
         return row * cols + col;
     }
-
 
     /**
      * Renders the gridcells for debugging
