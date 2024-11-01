@@ -9,18 +9,18 @@ import project.main.Frame;
 
 public class ParticleManager {
     private Random random = new Random();
-    private int numberParticles = 400;
+    private int numberParticles = 800;
     private int numberOfGroups = 6;
 
     private ArrayList<Particle> particles = new ArrayList<>();
     private boolean particlesCreated = false;
+    private Grid grid;
 
-    private double rMax = 300;
+    // gcd(2560, 1440) = 160,  for 1920x1080 use gcd(1920, 1080) = 120 for ideal grid
+    private double rMax = 160; 
     private double friction = 0.90;
     private int forceFactor  = 1;
     private double dt = 0.01;
-
-    private Grid grid;
 
     private double totalForcex = 0;
     private double totalForcey = 0;
@@ -68,6 +68,7 @@ public class ParticleManager {
      */
     public void update() {
         grid = new Grid(rMax, particles);
+        
         for (Particle particle : particles) {
             updateVelocity(particle, grid);
             updatePosition(particle);
@@ -231,7 +232,7 @@ public class ParticleManager {
     /**
      * Randomises rules for attraction between particles
      */
-    public void ChangeRules() {
+    public void ChangeAttraction() {
         for (int i = 0; i < attraction.length; i++) {
             for (int j = 0; j < attraction[i].length; j++) {
                 attraction[i][j] = random.nextInt(-5, 5) / 5.0;

@@ -71,7 +71,7 @@ public class KeyboardInputs implements KeyListener{
                 particleManager.changeGlow();
                 break;
             case KeyEvent.VK_SPACE:
-                particleManager.ChangeRules();
+                particleManager.ChangeAttraction();
                 break;
 
             // Preset attraction matrix
