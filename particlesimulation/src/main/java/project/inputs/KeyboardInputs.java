@@ -73,16 +73,19 @@ public class KeyboardInputs implements KeyListener{
             case KeyEvent.VK_SPACE:
                 particleManager.ChangeRules();
                 break;
+            case KeyEvent.VK_P:
+                particleManager.switchSP();
+                break;
 
             // Preset attraction matrix
             case KeyEvent.VK_1:
                 double[][] preset1 = { // total repulsion
-                    {-1.0,  -1.0,  -1.0,   -1.0,    -1.0,    -1.0},
-                    {-1.0,  -1.0,  -1.0,   -1.0,    -1.0,    -1.0},
-                    {-1.0,  -1.0,  -1.0,   -1.0,    -1.0,    -1.0},
-                    {-1.0,  -1.0,  -1.0,   -1.0,    -1.0,    -1.0},
-                    {-1.0,  -1.0,  -1.0,   -1.0,    -1.0,    -1.0},
-                    {-1.0,  -1.0,  -1.0,   -1.0,    -1.0,    -1.0},
+                    {0.0,  0.0,  0.0,   0.0,    0.0,    0.0},
+                    {0.0,  0.0,  0.0,   0.0,    0.0,    0.0},
+                    {0.0,  0.0,  0.0,   0.0,    0.0,    0.0},
+                    {0.0,  0.0,  0.0,   0.0,    0.0,    0.0},
+                    {0.0,  0.0,  0.0,   0.0,    0.0,    0.0},
+                    {0.0,  0.0,  0.0,   0.0,    0.0,    0.0},
                 };
                 particleManager.setAttraction(preset1);
                 break;

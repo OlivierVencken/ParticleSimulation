@@ -91,9 +91,7 @@ public class Simulation implements Runnable{
         }
 
         int borderOffset = 60;
-        g.setColor(new Color(60, 60, 60, 80));
-        g.fillRect(Frame.width - 74, 0, 74, 126);
-
+        
         g.setColor(Color.GREEN);
         g.drawString(fps, Frame.width - borderOffset, 20);
         g.drawString(ups, Frame.width - borderOffset, 40);
