@@ -4,22 +4,21 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Random;
-
 import project.main.Frame;
 
 public class ParticleManager {
     private Random random = new Random();
-    private int numberParticles = 600;
+    private int numberParticles = 10;
     private int numberOfGroups = 6;
 
     private ArrayList<Particle> particles = new ArrayList<>();
     private boolean particlesCreated = false;
     private Grid grid;
 
-    private double rMax = 172; 
+    private double rMax = 300; 
     private double friction = 0.90;
     private int forceFactor  = 1;
-    private double dt = 0.01;
+    private double dt = 0.0001;
 
     private double totalForcex = 0;
     private double totalForcey = 0;
@@ -67,7 +66,7 @@ public class ParticleManager {
      */
     public void update() {
         grid = new Grid(rMax, particles);
-        
+
         for (Particle particle : particles) {
             updateVelocity(particle, grid);
             updatePosition(particle);
@@ -104,10 +103,7 @@ public class ParticleManager {
     private void updatePosition(Particle particle) {
         particle.setX(particle.getX() + particle.getXspeed() * dt);
         particle.setY(particle.getY() + particle.getYspeed() * dt);
-
-        if (!InFrame(particle)) {
-            borderForce(particle);
-        }
+        setInFrame(particle);
     }
 
     /**
@@ -123,7 +119,7 @@ public class ParticleManager {
         double dy = y2 - y1;
         dx = checkdx(dx);
         dy = checkdy(dy);
-        double distance = Math.sqrt(dx * dx + dy * dy);
+        double distance = Math.hypot(dx, dy);
         if (distance > 0 && distance < rMax) {
             double F = force(distance/rMax, a);
             totalForcex += dx/distance * F;
@@ -153,38 +149,19 @@ public class ParticleManager {
      * If a particle gets offscreen, is simply comes out of the other side
      * @param particle
      */
-    private void borderForce(Particle particle) {
+    private void setInFrame(Particle particle) {
         if (particle.getX() > Frame.width) {
-            particle.setX(particle.getX() - Frame.width);
+            particle.setX(particle.getX() % Frame.width);
         }
         if (particle.getX() < 0) {
-            particle.setX(particle.getX() + Frame.width);
+            particle.setX((particle.getX() % Frame.width + Frame.width) % Frame.width);
         }
         if (particle.getY() > Frame.height) {
-            particle.setY(particle.getY() - Frame.height);
+            particle.setY(particle.getY() % Frame.height);
         } 
         if (particle.getY() < 0) {
-            particle.setY(particle.getY() + Frame.height);
+            particle.setY((particle.getY() % Frame.height + Frame.height) % Frame.height);
         } 
-
-        // recursive call if still not in frame
-        if (!InFrame(particle)) {
-            borderForce(particle);
-        }
-    }
-
-    /**
-     * Checks if a particle is inFrame
-     * @param particle
-     * @return true if particle is in frame, false otherwise
-     */
-    private boolean InFrame(Particle particle) {
-        if (particle.getX() <= Frame.width && particle.getX() >= 0) {
-            if (particle.getY() <= Frame.height && particle.getY() >= 0) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
