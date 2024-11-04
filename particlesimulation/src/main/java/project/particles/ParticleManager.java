@@ -4,21 +4,22 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Random;
+
 import project.main.Frame;
 
 public class ParticleManager {
     private Random random = new Random();
-    private int numberParticles = 10;
+    private int numberParticles = 600;
     private int numberOfGroups = 6;
 
     private ArrayList<Particle> particles = new ArrayList<>();
     private boolean particlesCreated = false;
     private Grid grid;
 
-    private double rMax = 300; 
+    private double rMax = 172; 
     private double friction = 0.90;
     private int forceFactor  = 1;
-    private double dt = 0.0001;
+    private double dt = 0.01;
 
     private double totalForcex = 0;
     private double totalForcey = 0;
@@ -119,7 +120,7 @@ public class ParticleManager {
         double dy = y2 - y1;
         dx = checkdx(dx);
         dy = checkdy(dy);
-        double distance = Math.hypot(dx, dy);
+        double distance = Math.sqrt( dx * dx + dy * dy);
         if (distance > 0 && distance < rMax) {
             double F = force(distance/rMax, a);
             totalForcex += dx/distance * F;
