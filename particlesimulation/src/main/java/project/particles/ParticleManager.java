@@ -9,15 +9,14 @@ import project.main.Frame;
 
 public class ParticleManager {
     private Random random = new Random();
-    private int numberParticles = 800;
+    private int numberParticles = 600;
     private int numberOfGroups = 6;
 
     private ArrayList<Particle> particles = new ArrayList<>();
     private boolean particlesCreated = false;
     private Grid grid;
 
-    // gcd(2560, 1440) = 160,  for 1920x1080 use gcd(1920, 1080) = 120 for ideal grid
-    private double rMax = 160; 
+    private double rMax = 172; 
     private double friction = 0.90;
     private int forceFactor  = 1;
     private double dt = 0.01;
@@ -105,7 +104,10 @@ public class ParticleManager {
     private void updatePosition(Particle particle) {
         particle.setX(particle.getX() + particle.getXspeed() * dt);
         particle.setY(particle.getY() + particle.getYspeed() * dt);
-        borderForce(particle);
+
+        if (!InFrame(particle)) {
+            borderForce(particle);
+        }
     }
 
     /**
@@ -151,7 +153,7 @@ public class ParticleManager {
      * If a particle gets offscreen, is simply comes out of the other side
      * @param particle
      */
-    private static void borderForce(Particle particle) {
+    private void borderForce(Particle particle) {
         if (particle.getX() > Frame.width) {
             particle.setX(particle.getX() - Frame.width);
         }
@@ -164,6 +166,25 @@ public class ParticleManager {
         if (particle.getY() < 0) {
             particle.setY(particle.getY() + Frame.height);
         } 
+
+        // recursive call if still not in frame
+        if (!InFrame(particle)) {
+            borderForce(particle);
+        }
+    }
+
+    /**
+     * Checks if a particle is inFrame
+     * @param particle
+     * @return true if particle is in frame, false otherwise
+     */
+    private boolean InFrame(Particle particle) {
+        if (particle.getX() <= Frame.width && particle.getX() >= 0) {
+            if (particle.getY() <= Frame.height && particle.getY() >= 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
