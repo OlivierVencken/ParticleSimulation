@@ -67,8 +67,11 @@ public class KeyboardInputs implements KeyListener{
                 break;
 
             // Particle settings
-            case KeyEvent.VK_I:
-                particleManager.changeGlow();
+            case KeyEvent.VK_O:
+                particleManager.changeGlow(); 
+                break;
+            case KeyEvent.VK_P:
+                particleManager.switchColorMethod();
                 break;
             case KeyEvent.VK_SPACE:
                 particleManager.ChangeAttraction();

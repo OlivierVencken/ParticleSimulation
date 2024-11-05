@@ -117,6 +117,14 @@ public class Particle {
         return color;
     }
 
+    public void setColor(Color color) {
+        this.color = color;
+    }
+    
+    public Color[] getColors() {
+        return colors;
+    }
+
     public double getXspeed() {
         return xspeed;
     }

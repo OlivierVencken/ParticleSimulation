@@ -21,6 +21,14 @@ public class ParticleManager {
     private int forceFactor  = 1;
     private double dt = 0.01;
 
+    private enum ColorMethod {
+        GROUP,
+        SPEED,
+        DENISTY
+      }
+    
+    private ColorMethod colorMethod = ColorMethod.GROUP;
+
     private double totalForcex = 0;
     private double totalForcey = 0;
     private double[][] attraction = {
@@ -71,6 +79,7 @@ public class ParticleManager {
         for (Particle particle : particles) {
             updateVelocity(particle, grid);
             updatePosition(particle);
+            updateColor(particle);
         }
     }
 
@@ -189,6 +198,82 @@ public class ParticleManager {
             dy += Frame.height;
         }
         return dy;
+    }
+
+    private void updateColor(Particle particle) {
+        Color color;
+
+        switch (colorMethod) {
+            case ColorMethod.GROUP:
+                color = getColorBasedOnGroup(particle);
+                break;
+            case ColorMethod.SPEED:
+                color = getColorBasedOnSpeed(particle);
+                break;
+            case ColorMethod.DENISTY:
+                color = setColorBasedOnDensity(particle);
+                break;
+            default:
+                color = getColorBasedOnGroup(particle);
+        }
+        particle.setColor(color);
+    }
+
+    public void switchColorMethod() {
+        switch (colorMethod) {
+            case ColorMethod.GROUP:
+                colorMethod = ColorMethod.SPEED;
+                break;
+            case ColorMethod.SPEED:
+                colorMethod = ColorMethod.DENISTY;
+                break;
+            case ColorMethod.DENISTY:
+                colorMethod = ColorMethod.GROUP;
+                break;
+        }
+    }
+
+    private Color getColorBasedOnGroup(Particle particle) {
+        return particle.getGroupColor(particle.getGroupNumber());
+    }
+
+    private Color getColorBasedOnSpeed(Particle particle) {
+        //TODO: make this dynamic
+        int maxSpeed = 400; 
+
+        // Calculate the speed magnitude
+        double speed = Math.sqrt(particle.getXspeed() * particle.getXspeed() + particle.getYspeed() * particle.getYspeed());
+
+
+        double normalizedSpeed = Math.min(speed / maxSpeed, 1.0); 
+
+        // Interpolate between blue and red
+        int red = (int) (normalizedSpeed * 255); 
+        int blue = (int) ((1 - normalizedSpeed) * 255); 
+
+        return new Color(red, 0, blue);
+    }
+
+    private Color setColorBasedOnDensity(Particle particle) {
+        //TODO: make this dynamic and right implementation of density
+        int maxDensity = 1200; 
+
+        int densityCount = 0;
+
+        // Calculate density
+        ArrayList<Particle> neighbors = grid.getNeighbors(particle);
+        for (@SuppressWarnings("unused") Particle neighbor : neighbors) {
+            densityCount++;
+        }
+
+        // Normalize the density
+        double normalizedDensity = Math.min((double) densityCount / maxDensity, 1.0); 
+
+        // Interpolate between blue and red based on density
+        int red = (int) (normalizedDensity * 255); 
+        int blue = (int) ((1 - normalizedDensity) * 255); 
+        
+        return new Color(red, 0, blue);
     }
 
     /**
